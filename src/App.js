@@ -1,24 +1,40 @@
 import { useState } from "react";
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: true },
-  { id: 3, description: "Charger", quantity: 1, packed: false },
-  { id: 4, description: "Powerbank", quantity: 2, packed: true },
-];
+// const initialItems = [
+//   { id: 1, description: "Passports", quantity: 2, packed: false },
+//   { id: 2, description: "Socks", quantity: 12, packed: true },
+//   { id: 3, description: "Charger", quantity: 1, packed: false },
+//   { id: 4, description: "Powerbank", quantity: 2, packed: true },
+// ];
 
 export default function App() {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState([]);
 
   const addItem = (newItem) => {
     setItems([...items, newItem]);
+  };
+
+  const deleteItem = (id) => {
+    setItems((items) => items.filter((item) => item.id !== id));
+  };
+
+  const toggleItem = (id) => {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
   };
 
   return (
     <div className="app">
       <Logo />
       <Form addItem={addItem} />
-      <PackingList items={items} />
+      <PackingList
+        items={items}
+        deleteItem={deleteItem}
+        toggleItem={toggleItem}
+      />
       <Stats items={items} />
     </div>
   );
@@ -65,25 +81,37 @@ function Form({ addItem }) {
   );
 }
 
-function PackingList({ items }) {
+function PackingList({ items, deleteItem, toggleItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => {
-          return <Item item={item} key={item.id} />;
+          return (
+            <Item
+              item={item}
+              key={item.id}
+              deleteItem={deleteItem}
+              toggleItem={toggleItem}
+            />
+          );
         })}
       </ul>
     </div>
   );
 }
 
-function Item({ item }) {
+function Item({ item, deleteItem, toggleItem }) {
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => toggleItem(item.id)}
+      />
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
-      <button>✖️</button>
+      <button onClick={() => deleteItem(item.id)}>✖️</button>
     </li>
   );
 }
