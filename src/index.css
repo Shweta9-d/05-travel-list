@@ -74,7 +74,7 @@ input {
   background-color: #800080;
   color: #ee82ee;
   padding: 4rem 0;
-  height: 316px;
+  height: 100%;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
